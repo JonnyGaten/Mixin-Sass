@@ -1,0 +1,87 @@
+// ----------------------------- General style ----------------------------------------//
+
+body{
+  background:#333333;
+  font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+.overall-container{
+    margin: 0 auto;
+    display: block;
+    text-align: center;
+}
+
+
+
+// --------------------------- Usage of Mixins ----------------------------------- //
+
+// ************* Buttons *********** //
+.btn-green {
+   @include btn(#2ecc71, auto, 10px 30px, 16px, #ffffff);
+}
+.btn-blue {
+   @include btn(#3498db, auto, 10px 30px, 16px, #ffffff);
+}
+.btn-red {
+   @include btn(#db3434, auto, 10px 30px, 16px, #ffffff);
+}
+
+// ***********  Triangle *********** //
+.tooltip { 
+  width:250px;
+  margin: 0 auto;
+  position: relative;
+  background: #0072ff;
+  padding: 1em;
+  border-radius: .15em;
+  filter: drop-shadow(0 .15em .1em rgba(0,0,0,.25));
+  color: white;
+  text-align: center;
+  font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-weight: 100;
+  font-size:18px;
+  
+  &:before {
+    // $color, $direction, $size, $center, $position
+    @include css-triangle(#0072ff, down, 30px, true, absolute);
+    top:100%;
+  }
+}
+
+// *********** Opacity ***********  //
+
+.opacity-example{
+  display:block;
+  text-align:center;
+  width: 200px;
+  margin: 0 auto;
+  background:#0072ff;
+  padding: 50px;
+  @include opacity(0.4);
+  p{
+    color:#ffffff;
+  }
+}
+
+// ******************* Vertical Align ******************//
+.vertical-container{
+  background:#0072ff;
+  height:200px;
+  width:300px;
+  margin:0 auto;
+  display:block;
+}
+
+//Making this div vertically aligned
+.vertical-aligned-box {
+ @include vertical-center;
+  background:#0072ff;
+  color:white;
+  text-align: center;
+  font-size:20px;
+}
+
+
+// *************** Percentage (change variables in _mixin.sass) *************//
+.chart-container{
+  padding: 20px;
+}

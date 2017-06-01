@@ -1,0 +1,240 @@
+//  ------------------------------------------------- BUTTONS   ------------------------------------------------- //
+
+@mixin btn($bg, $width, $padding, $fontsize, $fontcolor) {
+  background: $bg;
+  width: $width;
+  padding: $padding;
+  font-size: $fontsize;
+  color: $fontcolor;
+  
+  border:2px solid darken($bg,2%);
+  
+  &:hover {
+    background:darken($bg,8%);
+    transition: all 0.3s ease;
+    cursor:pointer;
+  }
+  &:active {
+    background:darken($bg,25%);
+  } 
+}
+
+.btn {
+ text-decoration:none;
+ border-radius:3px;
+}
+.btn-container{
+  padding: 20px;
+}
+
+//   ------------------------------------------------- CSS ARROW   ------------------------------------------------- //
+@mixin pseudo($display: block, $pos: absolute, $content: ''){
+	content: $content;
+	display: $display;
+	position: $pos;
+}
+
+@mixin css-triangle($color, $direction, $size: 6px, $center: false, $position: absolute){
+    @include pseudo($pos: $position);
+    width: 0;
+    height: 0;
+
+  @if $center == true {
+    @if $direction == up or $direction == down{
+       margin: auto;
+       left:0; 
+       right:0;
+    }
+
+  }
+  
+    @if $direction == down {
+        border-left: $size solid transparent;
+        border-right: $size solid transparent;
+        border-top: $size solid $color;
+        margin-top: 0;
+        // margin-top: 0 - round( $size / 2.5 );
+    } @else if $direction == up {
+        border-left: $size solid transparent;
+        border-right: $size solid transparent;
+        border-bottom: $size solid $color;
+        margin-bottom: 0;
+        //margin-bottom: 0 - round( $size / 2.5 );
+    } @else if $direction == right {
+        border-top: $size solid transparent;
+        border-bottom: $size solid transparent;
+        border-left: $size solid $color;
+        margin-right: -$size;
+    } @else if  $direction == left {
+        border-top: $size solid transparent;
+        border-bottom: $size solid transparent;
+        border-right: $size solid $color;
+        margin-left: -$size;
+    }
+}
+
+.triangle-container{
+  padding:20px;
+}
+
+
+// ------------------------------------------------- OPACITY  ------------------------------------------------- //
+@mixin opacity($opacity) {
+  filter: alpha(opacity=$opacity*100);
+  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=#{$opacity*100});
+  opacity: $opacity;
+}
+
+.opacity-container{
+  padding:20px;
+}
+
+
+// ------------------------------- Vertical Align -------------------------------- //
+//Prefix mixin//
+@mixin prefix($property, $value, $prefixes: ()) { 
+  @each $prefix in $prefixes {
+    -#{$prefix}-#{$property}: $value;
+  }
+  #{$property}: $value;
+ }
+
+//Center vertically
+@mixin vertical-center {
+    position: relative;
+    top: 50%;
+    @include prefix(transform, translateY(-50%), 'webkit' 'ms');
+}
+
+
+
+// -------------------------Percentage animation --------------------------------//
+
+@import "compass/css3";
+
+// Variables - change to edit the colors, size, width and time
+$incomplete: #0072ff;
+$complete: #ffffff;
+$size: 200px; 
+$borderwidth: 50px;
+$time: 2s;
+
+ 
+// Do not edit this
+$multiplier: 1;
+$by: 100/$multiplier;
+
+.chart {
+  position: absolute;
+  right: 0;
+  left: 0;
+  /* Use this when not using CodePen
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  */
+  
+  margin: 0 auto;
+  width: $size;
+  height: $size;
+  font-size: 24px;
+  color: white;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0px $borderwidth $incomplete;
+  overflow: hidden;
+  
+  &:before {
+    content: attr(data-percentage)'%';
+    display: block;
+    width: $size;
+    height: $size;
+    line-height: $size;
+    text-align: center;
+    border-radius: 50%;
+  }
+}
+
+@keyframes tens {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-160px); }
+}
+
+@keyframes ones {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-160px); }
+}
+
+.completed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+    width: $size;
+    height: $size;
+    box-shadow: inset 0 0 0px $borderwidth $complete;
+    border-radius: 50%;
+  }
+  
+  &:before { clip: rect(0 $size $size $size/2); }
+  &:after { clip: rect(0 $size/2 $size 0); }
+}
+
+@for $i from 0 through $by {
+   $value: $i * $multiplier;
+  
+  [data-percentage="#{$value}"] .completed {
+    @if $value <= 50 {
+      clip: rect(0 $size $size $size/2);
+    } @else {
+      clip: rect(0 $size $size 0px);
+    }
+    
+    &.active {
+      @if $value <= 50 {
+        &:before { 
+          transform: rotate(-180 + ($value/100 * 360deg));
+          animation: first-#{$value} $time 1 linear; 
+        }
+      } @else {
+        animation: mask-#{$value} $time linear;
+        &:before { 
+          transform: rotate(0deg);
+          animation: first-#{$value} $time 1 linear; 
+        }
+        &:after { 
+          transform: rotate(-360 + ($value/100 * 360deg));
+          animation: second-#{$value} $time 1 linear; 
+        }
+      }
+    }
+  }
+
+  
+  // Animation for chart
+  @keyframes mask-#{$value} {
+    0%, 50% { clip: rect(0 $size $size $size / 2); }
+    50.01%, 100% { clip: rect(0 $size $size 0px); }
+  }
+  @if $value <= 50 {
+    @keyframes first-#{$value} {
+      0% { transform: rotate(-180deg); }
+      50%, 100% { transform: rotate(-180 + ($value/100 * 360deg)); }
+    }
+  } @else {
+    @keyframes first-#{$value} {
+      0% { transform: rotate(-180deg); }
+      50%, 100% { transform: rotate(0deg); }
+    }
+    
+    @keyframes second-#{$value} {
+      0%, 50% { transform: rotate(0deg); }
+      50.01% { transform: rotate(-180deg); } 
+      100% { transform: rotate(-360 + ($value/100 * 360deg)); }
+    }
+  }
+}
